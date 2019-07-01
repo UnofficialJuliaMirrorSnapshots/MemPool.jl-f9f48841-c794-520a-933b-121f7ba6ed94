@@ -25,7 +25,7 @@ function serialize(io::AbstractSerializer, w::MMWrap)
     mmwrite(io, w.x)
 end
 
-function deserialize(io::AbstractSerializer, ::Type{MMWrap})
+function deserialize(io::AbstractSerializer, T::Type{MMWrap})
     MMWrap(mmread(T, io)) # gotta keep that wrapper on
 end
 
@@ -100,7 +100,11 @@ end
 
 function __init__()
     global session = "sess-" * randstring(5)
-    global host = getipaddr()
+    try
+        global host = getipaddr()
+    catch err
+        global host = Sockets.localhost
+    end
 end
 
 end # module
